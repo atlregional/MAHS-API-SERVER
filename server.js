@@ -4,7 +4,7 @@ const compression = require('compression');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-// const cors = require('cors');
+const cors = require('cors');
 
 // const session = require('express-session');
 const mongoose = require('mongoose');
@@ -18,7 +18,7 @@ const morgan = require('morgan');
 // require('./config/passport');
 
 app.use(morgan("tiny")); // logging framework
-// app.use(cors());
+app.use(cors());
 
 
 
