@@ -3,24 +3,24 @@ const mongoose = require("mongoose");
 const db = require("./models");
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// const tractDataSeed = require('./data/tractData.json');
-const tractInfoSeed = require('./data/tractInfo.json');
-const cityCrossWalkSeed = require('./data/tractToCityCrosswalk.json');
-const dataInfoSeed = require('./data/dataLabelManifests.json');
-const configSeed = require('./data/config.json');
+const tractDataSeed = require('./data/tractData.json');
+const tractInfoSeed = require('./data/tractinfoWithCities.json');
+// const cityCrossWalkSeed = require('./data/tractToCityCrosswalk.json');
+// const dataInfoSeed = require('./data/dataLabelManifests.json');
+// const configSeed = require('./data/config.json');
 
-const collection = 'config';
+const collection = process.argv[2];
 
-const tractInfoWCityArray = collection === 'tractinfo' ? 
+const tractInfo = collection === 'tractinfo' ? 
   tractInfoSeed.map(tract => {
     const tractObj = {...tract};
-    tractObj.Cities = [];
-    cityCrossWalkSeed.forEach(tractWCity => 
-      tractWCity.GEOID === tractObj.geoID ?
-        tractObj.Cities.push(tractWCity.Cities) 
-      : null);
+    // tractObj.Cities = [];
+    // cityCrossWalkSeed.forEach(tractWCity => 
+    //   tractWCity.GEOID === tractObj.geoID ?
+    //     tractObj.Cities.push(tractWCity.Cities) 
+    //   : null);
     tractDataSeed.forEach(tractData =>
-      tractData.GEOID.toString() === tract.GEOID ?
+      tractData.GEOID.toString() === tract.GEOID.toString() ?
         tractObj.Data = tractData
       : null
     )
@@ -28,17 +28,19 @@ const tractInfoWCityArray = collection === 'tractinfo' ?
     }
   ) : null;
 
-const content = 
-// ternary for each collection here
-  collection === 'tractinfo' ? 
-    tractInfoWCityArray
-  // :collection === 'tractdata' ? 
-  //   tractDataSeed
-  :collection === 'datainfo' ? 
-    dataInfoSeed
-  : collection === 'config' ?
-    configSeed
-  : null; 
+// console.log(tractInfo.filter(tract => tract.Cities.length > 0));
+
+// const content = 
+// // ternary for each collection here
+//   collection === 'tractinfo' ? 
+//     tractInfoWCityArray
+//   // :collection === 'tractdata' ? 
+//   //   tractDataSeed
+//   :collection === 'datainfo' ? 
+//     dataInfoSeed
+//   : collection === 'config' ?
+//     configSeed
+//   : null; 
 
 // const collection = 'tractinfo';
 const infoSeed = () => {
@@ -46,29 +48,29 @@ tractInfoSeed.map(tract => {
   const tractObj = { ...tract };
   tractObj.cities = [];
 
-  cityCrossWalkSeed.forEach(tractWCity =>
-    tractWCity.GEOID === tractObj.GEOID ?
-      tractObj.cities.push(tractWCity.Cities)
-      : null)
+  // cityCrossWalkSeed.forEach(tractWCity =>
+  //   tractWCity.GEOID === tractObj.GEOID ?
+  //     tractObj.cities.push(tractWCity.Cities)
+  //     : null)
       return tractObj;
 })
 
 }
 
 const seedConfig = {
-  datainfo: {
+  // datainfo: {
+  //   active: false,
+  //   content: require("../data/datainfo.json"),
+  //   overwrite: true
+  // },
+  // tractdata: {
+  //   active: false,
+  //   content: require("../data/tractdata.json"),
+  //   overwrite: true
+  // },
+  tractInfo: {
     active: true,
-    filepath: "../data/datainfo.json",
-    overwrite: true
-  },
-  tractdata: {
-    active: true,
-    filepath: "../data/tractdata.json",
-    overwrite: true
-  },
-  tractinfo: {
-    active: true,
-    filepath: infoSeed(),
+    content: tractInfo,
     overwrite: true
   },
 }
@@ -87,20 +89,28 @@ const seedConfig = {
 //   ) : null;
 
 
-mongoose.connect(MONGODB_URI,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  }
-);
+mongoose
+  .connect(
+    MONGODB_URI,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
+  )
+  .then(() => console.log('Connection successful'))
+  .catch(err => console.log(err));
 
 
-Object.entries(seedConfig).forEach(([key, value]) => {
-  const seed = require(value.filepath);
+Object.entries(seedConfig)
+  .filter(([,value]) => value.active)
+  .forEach(([key, config]) => {
+  const seed = config.content;
 
-    value.overwrite && db[key] ?
+  console.log(seed[0]);
+
+    config.overwrite && db[key]
       // then remove and insert
-      db[key]
+      ? db[key]
         .remove()
         .then(() =>
           db[key].insertMany(seed))
@@ -112,8 +122,8 @@ Object.entries(seedConfig).forEach(([key, value]) => {
           console.error(err);
           process.exit(1);
         })
-      : // or else if not true then just insert without removing
-      db[key].insertMany(seed)
+      // or else if not true then just insert without removing
+      : db[key].insertMany(seed)
         .then(data => {
           console.log(data.length + " records inserted!");
           process.exit(0);
@@ -122,11 +132,6 @@ Object.entries(seedConfig).forEach(([key, value]) => {
           console.error(err);
           process.exit(1);
         })
-
-
-
-
-
 });
 
 
