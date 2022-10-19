@@ -17,11 +17,8 @@ const PORT = process.env.PORT || 3001;
 const morgan = require('morgan');
 // require('./config/passport');
 
-app.use(morgan("tiny")); // logging framework
+app.use(morgan('tiny')); // logging framework
 // app.use(cors());
-
-
-
 
 // Define middleware here
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -38,10 +35,8 @@ if (process.env.NODE_ENV === 'production') {
   // });
 }
 
-//using the store: new MongoStore creates a new colection in our dB to store the sessions info (cookie)
+//using the store: new MongoStore creates a new collection in our dB to store the sessions info (cookie)
 //this way the web browser refresh will not delete it
-
-
 
 // app.use(session({
 //   secret: process.env.SessionSecret || 'sessionsecret',
@@ -58,34 +53,29 @@ app.use(flash());
 //   app.use(passport.initialize());
 //   app.use(passport.session());
 
-
 // Add routes, both API and view
 app.use(routes);
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/MAHS-DATA-EXPLORER';
-
-console.log(MONGODB_URI);
+// console.log(MONGODB_URI);
 
 // Connect to the Mongo DB
-mongoose.connect(
-  MONGODB_URI,
-  { useNewUrlParser: true,
-    useUnifiedTopology: true
-  }).then(() => {
-    console.log("DB Connected")
-}).catch(err => {
-    console.log('DB Connection ERROR: ', err)
-});
-
+mongoose
+  .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('DB Connected:', MONGODB_URI ? 'production' : 'dev');
+  })
+  .catch(err => {
+    console.log('DB Connection ERROR: ', err);
+  });
 
 // Start the API server
 app.listen(PORT, function () {
   console.log(`🌎  ==> API Server now listening on PORT ${PORT}!`);
 });
 
-
 // const MongoClient = require('mongodb').MongoClient;
-// const uri = "mongodb+srv://eviction-tracker:99gCLs6d62gB43V3@arcsafe0-wqosp.mongodb.net/test?retryWrites=true&w=majority";
+
 // const client = new MongoClient(uri, { useNewUrlParser: true });
 // client.connect(err => {
 //   const collection = client.db("test").collection("devices");
