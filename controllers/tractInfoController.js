@@ -23,7 +23,7 @@ module.exports = {
       const tractsArr = await tractinfo.find(filter).lean();
 
       const idArr = indicatorIDs ? indicatorIDs.split(',') : [];
-      const indicatorsArr = await dataInfo.find({ _id: { $in: idArr } }).lean();
+      const indicatorsArr = await dataInfo.find(idArr[0] ? { _id: { $in: idArr } } : {}).lean();
 
       const aggregator = 'GEOID';
       const csvArray = [];
