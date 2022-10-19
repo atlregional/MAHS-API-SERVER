@@ -39,8 +39,8 @@ module.exports = {
         csvArray.push(obj);
       }
 
-      const fileName = `MAHS-Census-Tract-Data-${geo}.csv`;
-      const title = `TITLE: MAHS Census Tract Data ${geo}`;
+      const fileName = `MAHS-Census-Tract-Data-${geo || '11-County-Region'}.csv`;
+      const title = `TITLE: MAHS Census Tract Data ${geo || '11-County Region'}`;
       const source = 'SOURCE: MAHS DATA EXPLORER - https://data.metroatlhousing.org/';
       const fields = Object.keys(csvArray[0]).filter(key => key !== 'All');
       fields.push('All'); // Move 'All' field to end of header array
