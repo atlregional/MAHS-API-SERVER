@@ -37,7 +37,7 @@ module.exports = {
         const aggregatedData = aggregate(tractsArr, indicator, aggregator);
 
         for (const key of Object.keys(aggregatedData)) {
-          resultObj[key]['Census Tract'] = key;
+          resultObj[key]['Census Tract ID'] = key;
           resultObj[key][indicator.name] = aggregatedData[key] || '';
         }
       }
