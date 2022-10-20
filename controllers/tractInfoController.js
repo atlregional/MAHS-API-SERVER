@@ -25,32 +25,32 @@ module.exports = {
       const idArr = indicatorIDs ? indicatorIDs.split(',') : [];
       const indicatorsArr = await dataInfo.find(idArr[0] ? { _id: { $in: idArr } } : {}).lean();
 
+      const resultObj = {};
       const aggregator = 'GEOID';
-      const csvArray = [];
+
+      for (const { GEOID } of tractsArr) {
+        resultObj[GEOID] = {};
+      }
+      resultObj['All'] = {};
 
       for (const indicator of indicatorsArr) {
         const aggregatedData = aggregate(tractsArr, indicator, aggregator);
 
-        const obj = {
-          indicator: indicator.name,
-          ...aggregatedData
-        };
-
-        csvArray.push(obj);
+        for (const key of Object.keys(aggregatedData)) {
+          resultObj[key]['Census Tract'] = key;
+          resultObj[key][indicator.name] = aggregatedData[key] || '';
+        }
       }
 
-      const fileName = `MAHS-Census-Tract-Data-${geo}.csv`;
-      const title = `TITLE: MAHS Census Tract Data ${geo}`;
+      const fileName = `MAHS-Census-Tract-Data-${geo || '11-County'}.csv`;
+      const title = `TITLE: MAHS Census Tract Data ${geo || '11-County'}`;
       const source = 'SOURCE: MAHS DATA EXPLORER - https://data.metroatlhousing.org/';
-      const fields = Object.keys(csvArray[0]).filter(key => key !== 'All');
-      fields.push('All'); // Move 'All' field to end of header array
-
-      const csv = parse(csvArray, { fields });
+      const csvStr = parse(Object.values(resultObj));
 
       let resStr = '';
       resStr += `${title} \n`;
       resStr += `${source} \n \n`;
-      resStr += csv;
+      resStr += csvStr;
 
       res.setHeader('Content-Disposition', `attachment;filename=${fileName}`);
       res.status(200).attachment(fileName).send(resStr);
