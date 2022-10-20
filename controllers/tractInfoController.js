@@ -52,6 +52,7 @@ module.exports = {
       resStr += `${source} \n \n`;
       resStr += csv;
 
+      res.setHeader('Content-Disposition', `attachment;filename=${fileName}`);
       res.status(200).attachment(fileName).send(resStr);
     } catch (err) {
       console.log(err);
