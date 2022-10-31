@@ -18,7 +18,11 @@ const morgan = require('morgan');
 // require('./config/passport');
 
 app.use(morgan('tiny')); // logging framework
-// app.use(cors());
+app.use(
+  cors({
+    exposedHeaders: 'Content-Disposition'
+  })
+);
 
 // Define middleware here
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -26,14 +30,14 @@ app.use(bodyParser.json());
 app.use(compression());
 app.use(cookieParser());
 // Serve up static assets (usually on heroku)
-if (process.env.NODE_ENV === 'production') {
-  // app.use(express.static('client/build'));
-  app.use(cors());
+// if (process.env.NODE_ENV === 'production') {
+// app.use(express.static('client/build'));
+// app.use(cors());
 
-  // app.get("*", (req, res) => {
-  //   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
-  // });
-}
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+// });
+// }
 
 //using the store: new MongoStore creates a new collection in our dB to store the sessions info (cookie)
 //this way the web browser refresh will not delete it
