@@ -18,11 +18,7 @@ const morgan = require('morgan');
 // require('./config/passport');
 
 app.use(morgan('tiny')); // logging framework
-app.use(
-  cors({
-    exposedHeaders: 'Content-Disposition'
-  })
-);
+app.use(cors({ exposedHeaders: 'Content-Disposition' }));
 
 // Define middleware here
 app.use(bodyParser.urlencoded({ extended: true }));
