@@ -1,10 +1,11 @@
 module.exports = {
     
     tractInfo : require('./tractInfo'),
-    // tractData : require('./tractData'),
+    tractData : require('./tractData'),
     // dataInfo : require('./dataInfo'),
     cityCrossWalk : require('./cityCrossWalk'),
-    config: require('./config')
+    config: require('./config'),
+    geo: require('./geo')
 };
 
 
