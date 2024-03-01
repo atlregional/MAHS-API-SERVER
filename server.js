@@ -1,21 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const compression = require('compression');
-// const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// const session = require('express-session');
 const mongoose = require('mongoose');
 const routes = require('./routes');
-// const passport = require('passport');
-// const MongoStore = require('connect-mongo')(session);
 const flash = require('express-flash');
 const app = express();
 const PORT = process.env.PORT || 3001;
 const morgan = require('morgan');
-// require('./config/passport');
 
 app.use(morgan('tiny')); // logging framework
 app.use(cors({ exposedHeaders: 'Content-Disposition' }));

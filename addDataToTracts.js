@@ -4,7 +4,7 @@ const db = require("./models");
 const csvToJson = require('convert-csv-to-json')
 const MONGODB_URI = process.env.MONGODB_URI;
 
-const dataPath = './data/All_CensusTract2010_2021.csv';
+const dataPath = './data/All_CensusTract2010_2022.csv';
 const collection = 'tractInfo';
 
 const dataArray = csvToJson.fieldDelimiter(',').getJsonFromCsv(dataPath);
@@ -23,16 +23,16 @@ const run = async () => {
 
   for await (obj of dataArray){
 
-      const suppress = new Number(obj.TotalTransactionsWithSalePrice2021) <= 10;
+      const suppress = false; // new Number(obj.TotalTransactionsWithSalePrice2022) <= 10;
 
       console.log(obj.geo, suppress ? '🚫' : '✅');
       await db[collection].findOneAndUpdate({GEOID: obj.geo}, { $set : {
-        "Data.Aggregate Home Sales, 2021": !suppress ? new Number(obj.GrossMaxSalePrice2021) : '',
-        "Data.Aggregate Building Area of Home Sales, 2021": !suppress ? new Number(obj.GrossBuildingAreaInferred2021) : ''
+        "Data.Aggregate Home Sales, 2022": !suppress ? new Number(obj.GrossMaxSalePrice2022) : '',
+        "Data.Aggregate Building Area of Home Sales, 2022": !suppress ? new Number(obj.GrossBuildingAreaInferred2022) : ''
       }})
       // await db[collection].updateOne({GEOID: obj.GEOID}, { Data: {
-      //   ['Aggregate Home Sales, 2021']: obj.AggregateHomesSales},
-      //   ['Aggregate Building Area of Home Sales, 2021']: obj.AggregateBuildingAreaofHomesSales
+      //   ['Aggregate Home Sales, 2022']: obj.AggregateHomesSales},
+      //   ['Aggregate Building Area of Home Sales, 2022']: obj.AggregateBuildingAreaofHomesSales
       // }, (err) => console.log(err)); 
     // i++
     // }

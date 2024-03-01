@@ -1,4 +1,4 @@
-const path = require('path');
+// const path = require('path');
 const router = require('express').Router();
 const tractInfoRoutes = require('./tractinfo')
 const dataInfoRoutes = require('./datainfo')
@@ -10,8 +10,8 @@ router.use('/api/datainfo', dataInfoRoutes);
 router.use('/api/config', configRoutes);
 router.use('/api/geo', geoRoutes);
 // If no API routes are hit, send the React app
-router.use((req, res) => 
-  res.sendFile(path.join(__dirname, '../client/build/index.html')));
+// router.use((req, res) => 
+//   res.sendFile(path.join(__dirname, '../client/build/index.html')));
 
 router.use((err, req, res, next) => {
   err.statusCode = err.statusCode || 500
