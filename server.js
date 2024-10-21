@@ -58,7 +58,7 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/MAHS-DATA-EX
 mongoose
   .connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    console.log('DB Connected:', MONGODB_URI ? 'production' : 'dev');
+    console.log('DB Connected:', MONGODB_URI);
   })
   .catch(err => {
     console.log('DB Connection ERROR: ', err);

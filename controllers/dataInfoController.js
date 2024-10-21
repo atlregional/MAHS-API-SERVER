@@ -4,7 +4,7 @@ const datainfo = require('../models/dataInfo')
 module.exports = {
     findAll: (req, res) => {
       console.log('data info query: ', req.query);
-      datainfo.find(req.query)
+      datainfo.find({...req.query, deactivated: {$exists: false}})
         // .sort({ date: -1 })
         .then(dbModel => res.json(dbModel))
         .catch(err => res.status(422).json(err));
