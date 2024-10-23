@@ -28,8 +28,10 @@ module.exports = {
       const resultObj = {};
       const aggregator = 'GEOID';
 
-      for (const { GEOID } of tractsArr) {
-        resultObj[GEOID] = {};
+      for (const { GEOID, Subarea } of tractsArr) {
+        resultObj[GEOID] = {
+          Submarket: Subarea
+        };
       }
       resultObj['All'] = {};
 
