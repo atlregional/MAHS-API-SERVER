@@ -30,7 +30,8 @@ module.exports = {
 
       for (const { GEOID, Subarea } of tractsArr) {
         resultObj[GEOID] = {
-          Submarket: Subarea
+          "Census Tract ID": GEOID,
+          Submarket: `${Subarea?.replace('Subarea ', '')}`
         };
       }
       resultObj['All'] = {};
