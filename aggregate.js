@@ -10,6 +10,19 @@ const aggregate = (data, indicatorInfo, aggregator) => {
     denominatorValues = {},
     numeratorValues2 = {},
     denominatorValues2 = {};
+
+    const roundToSignificantDigits = (value, significantDigits = 5) => {
+      if (value == null) return null;
+    
+      const strValue = value.toString();
+      
+      // Check if the number is less than 0 or has more than 15 characters (Excel limit)
+      if (value < 0 || strValue.length > 5) {
+        return parseFloat(value.toFixed(significantDigits)); // Apply rounding
+      }
+    
+      return value; // Return the original value if no rounding is required
+    };
   // numberOfTracts = {},
   // numberOfNulls = {},
   // numberOfTracts2 = {},
@@ -224,6 +237,11 @@ const aggregate = (data, indicatorInfo, aggregator) => {
               : (aggregatedDataObj[key] = null)
           );
     }
+
+    Object.keys(aggregatedDataObj).forEach((key) => {
+      aggregatedDataObj[key] = roundToSignificantDigits(aggregatedDataObj[key], significantDigits);
+    });
+
 
     // console.log(aggregatedDataObj2);
     // console.log({ aggregatedDataObj });
